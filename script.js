@@ -5,16 +5,39 @@ const form = document.getElementById("inputParent")
 const tbody = document.getElementById("tbody")
 
 
-let no = 1
+let dataKonversi = JSON.parse(localStorage.getItem("konversiSuhu")) || []
+let no = dataKonversi.length + 1
 
-form.addEventListener("submit",(event)=>{
+
+dataKonversi.forEach((item, index) => {
+    renderTbody(item, index + 1)
+})
+
+form.addEventListener("submit", (event) => {
     event.preventDefault()
 
+    const c = parseFloat(inputCelcius.value)
+    if (isNaN(c)) return
 
-    function renderTbody(){
+    const data = {
+        celcius: c,
+        fahrenheit: (c * 9 / 5) + 32,
+        reamur: c * 4 / 5,
+        kelvin: c + 273.15
+    }
+
+   
+    dataKonversi.push(data)
+    localStorage.setItem("konversiSuhu", JSON.stringify(dataKonversi))
+
+    renderTbody(data, no++)
+})
+
+
+function renderTbody(data, nomor){
         const tr = document.createElement("tr")
         const td1 = document.createElement("td")
-        td1.textContent = `${no++}`
+        td1.textContent = `${nomor}`
         const td2 = document.createElement("td")
         td2.textContent = `${data.celcius.toFixed(2)}`
         const td3 = document.createElement("td")
@@ -27,20 +50,3 @@ form.addEventListener("submit",(event)=>{
 
         tbody.append(tr)
     }
-    
-    const c = parseFloat(inputCelcius.value)
-    
-    const data = {
-        celcius: c,
-        fahrenheit: (c * 9 / 5) + 32,
-        reamur: c * 4 / 5,
-        kelvin: c + 273.15
-    }
-
-    localStorage.setItem("konversiSuhu", JSON.stringify(data))
-    renderTbody()
-    
-})
-
-
-
